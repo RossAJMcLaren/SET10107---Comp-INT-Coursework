@@ -1,0 +1,296 @@
+package coursework;
+
+import java.util.ArrayList;
+import java.util.Collections;
+
+import com.sun.org.apache.xalan.internal.xsltc.runtime.Parameter;
+
+import model.Fitness;
+import model.Individual;
+import model.LunarParameters.DataSet;
+import model.NeuralNetwork;
+
+/**
+ * Implements a basic Evolutionary Algorithm to train a Neural Network
+ * 
+ * You Can Use This Class to implement your EA or implement your own class that extends {@link NeuralNetwork} 
+ * 
+ */
+public class ExampleEvolutionaryAlgorithm extends NeuralNetwork {
+	
+
+	/**
+	 * The Main Evolutionary Loop
+	 */
+	@Override
+	public void run() {		
+		int generations = 0;
+		//Initialise a population of Individuals with random weights
+		population = initialise();
+
+		//Record a copy of the best Individual in the population
+		best = getBest();
+		System.out.println("Best From Initialisation " + best);
+
+		/**
+		 * main EA processing loop
+		 */		
+		
+		while (evaluations < Parameters.maxEvaluations) {
+
+			/**
+			 * this is a skeleton EA - you need to add the methods.
+			 * You can also change the EA if you want 
+			 * You must set the best Individual at the end of a run
+			 * 
+			 */
+			Individual parent1 = null; 
+			Individual parent2 = null;
+
+			// Select 2 Individuals from the current population. Currently returns random Individual
+			if(Parameters.selection == Parameters.selectionMethod.roulette)
+			{
+				parent1 = rouletteSelect(); 
+				parent2 = rouletteSelect();
+			}
+			else if (Parameters.selection == Parameters.selectionMethod.tournament)
+			{
+				parent1 = tournamentSelect(Parameters.tournamentSize);
+				parent2 = tournamentSelect(Parameters.tournamentSize);
+			}
+			// Generate a child by crossover. Not Implemented			
+			ArrayList<Individual> children = singlePointCrossover(parent1, parent2);
+			
+			//mutate the offspring
+			mutate(children);
+			
+			// Evaluate the children
+			evaluateIndividuals(children);			
+
+			// Replace children in population
+			replace(children);
+
+			// check to see if the best has improved
+			best = getBest();
+			
+			// Implemented in NN class. 
+			outputStats();
+			
+			//Increment number of completed generations		
+			generations++;
+		}
+
+		//save the trained network to disk
+		saveNeuralNetwork();
+	}
+
+	
+
+	/**
+	 * Sets the fitness of the individuals passed as parameters (whole population)
+	 * 
+	 */
+	private void evaluateIndividuals(ArrayList<Individual> individuals) {
+		for (Individual individual : individuals) {
+			individual.fitness = Fitness.evaluate(individual, this);
+		}
+	}
+
+
+	/**
+	 * Returns a copy of the best individual in the population
+	 * 
+	 */
+	private Individual getBest() {
+		best = null;;
+		for (Individual individual : population) {
+			if (best == null) {
+				best = individual.copy();
+			} else if (individual.fitness < best.fitness) {
+				best = individual.copy();
+			}
+		}
+		return best;
+	}
+
+	/**
+	 * Generates a randomly initialised population
+	 * 
+	 */
+	private ArrayList<Individual> initialise() {
+		population = new ArrayList<>();
+		for (int i = 0; i < Parameters.popSize; ++i) {
+			//chromosome weights are initialised randomly in the constructor
+			Individual individual = new Individual();
+			population.add(individual);
+		}
+		evaluateIndividuals(population);
+		return population;
+	}
+
+	/**
+	 * Selection --
+	 * 
+	 * NEEDS REPLACED with proper selection this just returns a copy of a random
+	 * member of the population
+	 */
+	private Individual rouletteSelect() {	
+		//Implementation of Roulette Selection
+		//Returns the selected index based on fitness	
+		
+		double sumFitness = 0.0;
+		//Return the last value of the population when rounding error occurs
+		int individualIndex = population.size() - 1;
+		//Sorts the list into descending order
+		Collections.sort(population, Collections.reverseOrder());
+		//Define the sum fitness of the population inverted for minimisation
+		for(Individual individual: population)
+		{
+			sumFitness += (1-individual.fitness);
+		}
+		//Generate random value based on sum fitness
+		double ranVal = Parameters.random.nextDouble() * sumFitness;
+		for(int i = 0; i < population.size(); i++)
+		{
+			ranVal -= (1-population.get(i).fitness);
+			if(ranVal <= 0) 
+			{
+				individualIndex = i;
+			}	
+		}
+
+
+		return population.get(individualIndex).copy();
+	}
+	
+	private Individual tournamentSelect(int tournamentSize)
+	{
+		Individual parent = new Individual();
+		
+		
+		return parent;
+	}
+
+	/**
+	 * Crossover / Reproduction
+	 * 
+	 * NEEDS REPLACED with proper method this code just returns exact copies of the
+	 * parents. 
+	 */
+	private ArrayList<Individual> singlePointCrossover(Individual parent1, Individual parent2) {
+		ArrayList<Individual> children = new ArrayList<>();
+		Individual firstChild = new Individual();
+		Individual secondChild = new Individual();
+		int totalGenes = parent1.chromosome.length;
+		int crossoverPoint = Parameters.random.nextInt(totalGenes);
+
+		for(int i = 0; i < crossoverPoint; i++)
+		{
+			firstChild.chromosome[i] = parent1.chromosome[i];
+			secondChild.chromosome[i] = parent2.chromosome[i];
+		}
+		
+		for(int i = crossoverPoint; i < totalGenes; i++)
+		{
+			firstChild.chromosome[i] = parent2.chromosome[i];
+			secondChild.chromosome[i] = parent1.chromosome[i];
+		}
+		
+		children.add(firstChild);
+		children.add(secondChild);	
+		return children;
+	} 
+	
+	private ArrayList<Individual> uniformCrossover(Individual parent1, Individual parent2)
+	{
+		ArrayList<Individual> children = new ArrayList<>();
+		Individual firstChild = new Individual();
+		Individual secondChild = new Individual();
+		int totalGenes = parent1.chromosome.length;
+		int crossoverPoint = Parameters.random.nextInt(2);
+		
+		for(int i = 0; i < crossoverPoint; i++)
+		{
+			if (crossoverPoint < 1)
+			{
+				firstChild.chromosome[i] = parent1.chromosome[i];
+				secondChild.chromosome[i] = parent2.chromosome[i];
+			}
+			else
+			{
+				firstChild.chromosome[i] = parent2.chromosome[i];
+				secondChild.chromosome[i] = parent1.chromosome[i];
+			}
+			crossoverPoint = Parameters.random.nextInt(2);
+		}
+		
+		children.add(firstChild);
+		children.add(secondChild);
+		
+		return children;
+	}
+	
+	/**
+	 * Mutation
+	 * 
+	 * 
+	 */
+	private void mutate(ArrayList<Individual> individuals) {		
+		for(Individual individual : individuals) {
+			for (int i = 0; i < individual.chromosome.length; i++) {
+				if (Parameters.random.nextDouble() < Parameters.mutateRate) {
+					if (Parameters.random.nextBoolean()) {
+						individual.chromosome[i] += (Parameters.mutateChange);
+					} else {
+						individual.chromosome[i] -= (Parameters.mutateChange);
+					}
+				}
+			}
+		}		
+	}
+
+	/**
+	 * 
+	 * Replaces the worst member of the population 
+	 * (regardless of fitness)
+	 * 
+	 */
+	private void replace(ArrayList<Individual> individuals) {
+		for(Individual individual : individuals) {
+			int idx = getWorstIndex();		
+			population.set(idx, individual);
+		}		
+	}
+
+	
+
+	/**
+	 * Returns the index of the worst member of the population
+	 * @return
+	 */
+	private int getWorstIndex() {
+		Individual worst = null;
+		int idx = -1;
+		for (int i = 0; i < population.size(); i++) {
+			Individual individual = population.get(i);
+			if (worst == null) {
+				worst = individual;
+				idx = i;
+			} else if (individual.fitness > worst.fitness) {
+				worst = individual;
+				idx = i; 
+			}
+		}
+		return idx;
+	}	
+
+	@Override
+	public double activationFunction(double x) {
+		if (x < -20.0) {
+			return -1.0;
+		} else if (x > 20.0) {
+			return 1.0;
+		}
+		return Math.tanh(x);
+	}
+}
