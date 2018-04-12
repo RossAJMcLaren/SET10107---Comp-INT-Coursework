@@ -226,9 +226,7 @@ public class ExampleEvolutionaryAlgorithm extends NeuralNetwork {
 	
 	/**
 	 * Mutation
-	 * Implements Boundary Mutation
-	 * In an instance were the addition or subtraction of the mutation change would put it outside the boundaries
-	 * the opposite operator is used
+	 * 
 	 * 
 	 */
 	private void mutate(ArrayList<Individual> individuals) {		
@@ -236,23 +234,9 @@ public class ExampleEvolutionaryAlgorithm extends NeuralNetwork {
 			for (int i = 0; i < individual.chromosome.length; i++) {
 				if (Parameters.random.nextDouble() < Parameters.mutateRate) {
 					if (Parameters.random.nextBoolean()) {
-						if(individual.chromosome[i] + (Parameters.mutateChange) < (Parameters.maxGene))
-						{
-							individual.chromosome[i] += (Parameters.mutateChange);
-						}
-						else
-						{
-							individual.chromosome[i] -= (Parameters.mutateChange);
-						}
+						individual.chromosome[i] += (Parameters.mutateChange);
 					} else {
-						if(individual.chromosome[i] - (Parameters.mutateChange) > (Parameters.minGene))
-						{
-							individual.chromosome[i] -= (Parameters.mutateChange);
-						}
-						else
-						{
-							individual.chromosome[i] += (Parameters.mutateChange);
-						}
+						individual.chromosome[i] -= (Parameters.mutateChange);
 					}
 				}
 			}

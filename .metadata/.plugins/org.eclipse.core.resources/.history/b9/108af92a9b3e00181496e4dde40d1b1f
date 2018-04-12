@@ -17,6 +17,8 @@ import model.NeuralNetwork;
  * 
  */
 public class ExampleEvolutionaryAlgorithm extends NeuralNetwork {
+	
+
 	/**
 	 * The Main Evolutionary Loop
 	 */
@@ -34,6 +36,7 @@ public class ExampleEvolutionaryAlgorithm extends NeuralNetwork {
 		 */		
 		
 		while (evaluations < Parameters.maxEvaluations) {
+
 			/**
 			 * this is a skeleton EA - you need to add the methods.
 			 * You can also change the EA if you want 
@@ -66,7 +69,7 @@ public class ExampleEvolutionaryAlgorithm extends NeuralNetwork {
 			}
 			
 			//mutate the offspring
-			mutate(children);
+			bitStringMutate(children);
 			
 			// Evaluate the children
 			evaluateIndividuals(children);			
@@ -87,6 +90,9 @@ public class ExampleEvolutionaryAlgorithm extends NeuralNetwork {
 		//save the trained network to disk
 		saveNeuralNetwork();
 	}
+
+	
+
 	/**
 	 * Sets the fitness of the individuals passed as parameters (whole population)
 	 * 
@@ -96,6 +102,8 @@ public class ExampleEvolutionaryAlgorithm extends NeuralNetwork {
 			individual.fitness = Fitness.evaluate(individual, this);
 		}
 	}
+
+
 	/**
 	 * Returns a copy of the best individual in the population
 	 * 
@@ -226,37 +234,42 @@ public class ExampleEvolutionaryAlgorithm extends NeuralNetwork {
 	
 	/**
 	 * Mutation
-	 * Implements Boundary Mutation
-	 * In an instance were the addition or subtraction of the mutation change would put it outside the boundaries
-	 * the opposite operator is used
+	 * 
 	 * 
 	 */
-	private void mutate(ArrayList<Individual> individuals) {		
+	private void bitStringMutate(ArrayList<Individual> individuals) {		
 		for(Individual individual : individuals) {
 			for (int i = 0; i < individual.chromosome.length; i++) {
 				if (Parameters.random.nextDouble() < Parameters.mutateRate) {
 					if (Parameters.random.nextBoolean()) {
-						if(individual.chromosome[i] + (Parameters.mutateChange) < (Parameters.maxGene))
-						{
-							individual.chromosome[i] += (Parameters.mutateChange);
-						}
-						else
-						{
-							individual.chromosome[i] -= (Parameters.mutateChange);
-						}
+						individual.chromosome[i] += (Parameters.mutateChange);
 					} else {
-						if(individual.chromosome[i] - (Parameters.mutateChange) > (Parameters.minGene))
-						{
-							individual.chromosome[i] -= (Parameters.mutateChange);
-						}
-						else
-						{
-							individual.chromosome[i] += (Parameters.mutateChange);
-						}
+						individual.chromosome[i] -= (Parameters.mutateChange);
 					}
 				}
 			}
 		}		
+	}
+	
+	private void flipBitMutate(ArrayList<Individual> individuals)
+	{
+		for(Individual individual : individuals)
+		{
+			for(int i = 0; i < individual.chromosome.length; i++)
+			{
+				if(Parameters.random.nextDouble() < Parameters.mutateRate)
+				{
+					if(individual.chromosome[i] == 0)
+					{
+						individual.chromosome[i] = 1;
+					}
+					else
+					{
+						individual.chromosome[i] = 0;
+					}
+				}
+			}
+		}
 	}
 
 	/**

@@ -252,7 +252,6 @@ public class ExampleEvolutionaryAlgorithm extends NeuralNetwork {
 						else
 						{
 							individual.chromosome[i] += (Parameters.mutateChange);
-						}
 					}
 				}
 			}
