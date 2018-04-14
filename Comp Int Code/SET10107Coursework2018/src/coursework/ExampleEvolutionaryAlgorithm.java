@@ -79,7 +79,7 @@ public class ExampleEvolutionaryAlgorithm extends NeuralNetwork {
 			evaluateIndividuals(children);			
 
 			// Replace children in population
-			replace(children);
+			replaceElitism(children);
 
 			// check to see if the best has improved
 			best = getBest();
@@ -305,9 +305,10 @@ public class ExampleEvolutionaryAlgorithm extends NeuralNetwork {
 	 * safe from replacement. All of the other members can be randomly selected.
 	 * Only replaced if the incoming child has a better fitness.
 	 */
-	private void replace(ArrayList<Individual> individuals) {
+	private void replaceElitism(ArrayList<Individual> individuals) {
 		Individual removed = null;
 		Collections.sort(population);
+		Collections.sort(individuals);
 		for(Individual individual : individuals)
 		{
 			removed = population.get(Parameters.random.nextInt(population.size()));
@@ -325,6 +326,30 @@ public class ExampleEvolutionaryAlgorithm extends NeuralNetwork {
 				{
 					break;
 				}
+			}
+		}
+	}
+	
+	private void replaceHalfElitism(ArrayList<Individual> individuals) {
+		Individual removed = null;
+		ArrayList<Individual> replacable = new ArrayList<Individual>();
+		Collections.sort(population);
+		Collections.sort(individuals);
+		for(int i = (population.size() / 2); i < population.size(); i++)
+		{
+			replacable.add(population.get(i));
+		}
+		
+		for(Individual individual:individuals)
+		{
+			removed = replacable.get(Parameters.random.nextInt((replacable.size())));
+			if(individual.fitness < removed.fitness)
+			{
+				population.set(replacable.indexOf(removed)*2, individual);
+			}
+			else
+			{
+				break;
 			}
 		}
 	}

@@ -1,0 +1,7 @@
+The mutation boundaries appear to have very little relevance to the fitness of an algorithm. 
+Doubling the Boundary resulted in a 5.68% increase of fitness on the training population, 
+which is bad as this is a minimization problem.
+It had a 0.40% increase on the fitness of the testing population.
+Halfing the Boundary resulted in a 12.60% increase of fitness on the training population, 
+which is bad as this is a minimization problem. 
+It had a 1.61% increase on the testing population.

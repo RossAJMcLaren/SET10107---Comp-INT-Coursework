@@ -16,7 +16,7 @@ public class Parameters {
 	enum crossoverMethod{singlePoint, uniform};
 	enum selectionMethod{roulette, tournament};
 	enum mutationMethod{boundaryA, boundaryB};
-	private static int numHidden = 5;	
+	private static int numHidden = 6;	
 	private static int numGenes = calculateNumGenes();
 	public static double minGene = -5; // specifies minimum and maximum weight values 
 	public static double maxGene = +5;	
@@ -40,7 +40,7 @@ public class Parameters {
 	//Parameters for which Crossover/Selection/Mutation should be run
 	public static int tournamentSize = 10;
 	public static crossoverMethod crossover = crossoverMethod.singlePoint;
-	public static selectionMethod selection = selectionMethod.tournament;
+	public static selectionMethod selection = selectionMethod.roulette;
 	public static mutationMethod mutation = mutationMethod.boundaryB;
 	
 	/**
