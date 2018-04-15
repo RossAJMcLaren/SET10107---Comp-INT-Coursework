@@ -233,9 +233,8 @@ public class ExampleEvolutionaryAlgorithm extends NeuralNetwork {
 	
 	/**
 	 * Mutation
-	 * Implements Boundary Mutation
-	 * In an instance were the addition or subtraction of the mutation change would put it outside the boundaries
-	 * the opposite operator is used
+	 * Implements Boundary Mutation Multiplication
+	 * 
 	 * 
 	 */
 	private void boundaryMutateA(ArrayList<Individual> individuals) {		
@@ -243,22 +242,22 @@ public class ExampleEvolutionaryAlgorithm extends NeuralNetwork {
 			for (int i = 0; i < individual.chromosome.length; i++) {
 				if (Parameters.random.nextDouble() < Parameters.mutateRate) {
 					if (Parameters.random.nextBoolean()) {
-						if(individual.chromosome[i] + (Parameters.mutateChange) < (Parameters.maxGene))
+						if(individual.chromosome[i] * (Parameters.mutateChange) < (Parameters.maxGene))
 						{
-							individual.chromosome[i] += (Parameters.mutateChange);
+							individual.chromosome[i] *= (Parameters.mutateChange);
 						}
 						else
 						{
-							individual.chromosome[i] -= (Parameters.mutateChange);
+							individual.chromosome[i] = Parameters.maxGene;
 						}
 					} else {
-						if(individual.chromosome[i] - (Parameters.mutateChange) > (Parameters.minGene))
+						if(individual.chromosome[i] * -(Parameters.mutateChange) > (Parameters.minGene))
 						{
-							individual.chromosome[i] -= (Parameters.mutateChange);
+							individual.chromosome[i] *= -(Parameters.mutateChange);
 						}
 						else
 						{
-							individual.chromosome[i] += (Parameters.mutateChange);
+							individual.chromosome[i] = Parameters.minGene;
 						}
 					}
 				}
@@ -267,9 +266,7 @@ public class ExampleEvolutionaryAlgorithm extends NeuralNetwork {
 	}
 	/**
 	 * 
-	 * Also implements Boundary Mutate
-	 * But in an instance where the chromosome would go out of bounds
-	 * it is instead set to the max or min bound
+	 * Boundary Mutate Addition
 	 */
 	private void boundaryMutateB(ArrayList<Individual> individuals) {		
 		for(Individual individual : individuals) {
