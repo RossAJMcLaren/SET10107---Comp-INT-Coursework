@@ -349,7 +349,23 @@ public class ExampleEvolutionaryAlgorithm extends NeuralNetwork {
 		}
 	}
 
-	
+	private void replaceyWacey(ArrayList<Individual> individuals) {
+		Individual removed = null;
+		Collections.sort(population);
+		Collections.sort(individuals);
+		for(Individual individual : individuals)
+		{
+			removed = population.get(Parameters.random.nextInt(population.size()));
+			if(removed == getBest())
+			{
+				removed = population.get(Parameters.random.nextInt(population.size()));
+			}
+			else
+			{
+				population.set(population.indexOf(removed), individual);
+			}
+		}
+	}
 	
 
 	/**

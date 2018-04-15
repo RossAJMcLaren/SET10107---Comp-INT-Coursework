@@ -349,7 +349,30 @@ public class ExampleEvolutionaryAlgorithm extends NeuralNetwork {
 		}
 	}
 
-	
+	private void replaceElitism(ArrayList<Individual> individuals) {
+		Individual removed = null;
+		Collections.sort(population);
+		Collections.sort(individuals);
+		for(Individual individual : individuals)
+		{
+			removed = population.get(Parameters.random.nextInt(population.size()));
+			if(removed == getBest())
+			{
+				removed = population.get(Parameters.random.nextInt(population.size()));
+			}
+			else
+			{
+				if(individual.fitness < removed.fitness)
+				{
+					population.set(population.indexOf(removed), individual);
+				}
+				else
+				{
+					break;
+				}
+			}
+		}
+	}
 	
 
 	/**

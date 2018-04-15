@@ -79,7 +79,7 @@ public class ExampleEvolutionaryAlgorithm extends NeuralNetwork {
 			evaluateIndividuals(children);			
 
 			// Replace children in population
-			replaceElitism(children);
+			replaceyWacey(children);
 
 			// check to see if the best has improved
 			best = getBest();
@@ -349,7 +349,20 @@ public class ExampleEvolutionaryAlgorithm extends NeuralNetwork {
 		}
 	}
 
-	
+	private void replaceyWacey(ArrayList<Individual> individuals) {
+		Individual removed = null;
+		Collections.sort(population);
+		Collections.sort(individuals);
+		for(Individual individual : individuals)
+		{
+			removed = population.get(Parameters.random.nextInt(population.size()));
+			while(removed == getBest())
+			{
+				removed = population.get(Parameters.random.nextInt(population.size()));
+			}
+				population.set(population.indexOf(removed), individual);
+		}
+	}
 	
 
 	/**

@@ -215,17 +215,6 @@ public class ExampleEvolutionaryAlgorithm extends NeuralNetwork {
 	
 	private ArrayList<Individual> uniformCrossover(Individual parent1, Individual parent2)
 	{
-		while(parent1 == parent2)
-		{
-			if(Parameters.selection == Parameters.selectionMethod.roulette)
-			{
-				parent2 = rouletteSelect();
-			}
-			else
-			{
-				parent2 = tournamentSelect(Parameters.tournamentSize);
-			}
-		}
 		ArrayList<Individual> children = new ArrayList<>();
 		Individual firstChild = new Individual();
 		Individual secondChild = new Individual();
@@ -349,7 +338,6 @@ public class ExampleEvolutionaryAlgorithm extends NeuralNetwork {
 		}
 	}
 
-	
 	
 
 	/**
